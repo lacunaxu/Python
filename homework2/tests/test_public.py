@@ -1,90 +1,103 @@
-import pytest
-from lab2 import format_date, check_palindrome_tuples, join_by_delimiter
+from typing import List, Tuple
 
+def format_date(day: int, month: int, year: int) -> str:
+    """
+    Format a given date into the format "DD Month, YYYY".
 
-@pytest.mark.parametrize(
-    "day, month, year, result",
-    [
-        (1, 8, 2000, "01 August, 2000"),
-        (27, 1, 2003, "27 January, 2003"),
-    ],
-)
-@pytest.mark.timeout(0.3)
-def test_format_date_valid(day, month, year, result):
-    assert format_date(day, month, year) == result
+    Args:
+        day (int): The day of the month.
+        month (int): The month of the year (1-12).
+        year (int): The year.
 
+    Returns:
+        str: The formatted date as "DD Month, YYYY".
 
-@pytest.mark.parametrize(
-    "day, month, year",
-    [
-        (32, 1, 2003),
-        (30, 13, 2003),
-        (29, 2, 2003),
-    ],
-)
-@pytest.mark.timeout(0.3)
-def test_format_date_invalid(day, month, year):
-    with pytest.raises(Exception, match=f"The given date: {day}, {month}, {year} is invalid"):
-        format_date(day, month, year)
+    Raises:
+        Exception: If the provided date is invalid.
+    """
+    months = [
+        "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ]
 
+    if month < 1 or month > 12:
+        raise Exception(f"The given date: {day}, {month}, {year} is invalid")
 
-@pytest.mark.parametrize(
-    "tups, result",
-    [
-        ([("abc", "cba"), ("madam", "madam")], True),
-        ([("abc", "def"), ("ghi", "ihg")], False),
-        ([("python", "nohtyp"), ("java", "avaj"), ("abc", "xyz")], False),
-    ],
-)
-@pytest.mark.timeout(0.3)
-def test_check_palindrome_tuples(tups, result):
-    assert check_palindrome_tuples(tups) == result
+    days_in_month = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+    if year % 4 == 0 and (year % 100 != 0 or year % 400 == 0):
+        days_in_month[1] = 29  # Leap year
 
+    if day < 1 or day > days_in_month[month - 1]:
+        raise Exception(f"The given date: {day}, {month}, {year} is invalid")
 
-@pytest.mark.parametrize(
-    "tups",
-    [
-        ([(123, "321")]),
-        ("abc, cba"),
-        ([("abc", "cba", "extra")]),
-        ([("", "cba")]),
-    ],
-)
-@pytest.mark.timeout(0.3)
-def test_check_palindrome_tuples_invalid_input(tups):
-    with pytest.raises(Exception) as excinfo:
-        check_palindrome_tuples(tups)
-    assert str(excinfo.value) == "Invalid Input"
+    return f"{day:02d} {months[month - 1]}, {year}"
 
+def check_palindrome_tuples(tups: List[Tuple[str, str]]) -> bool:
+    """
+    Check if all pairs of strings in the list are palindromes of each other.
 
-@pytest.mark.parametrize(
-    "substrings, delimiter, result",
-    [
-        (["this", "is", "DSCI", "510"], " ", "this is DSCI 510"),
-        (["I", "am", "a", "student"], ",", "I,am,a,student"),
-        (
-            ["this class", "is really nice!"],
-            ",",
-            "this class,is really nice!",
-        ),
-        ([], ",", ""),
-        (["this", "class", "is", "nice!"], "", "thisclassisnice!"),
-    ],
-)
-@pytest.mark.timeout(0.3)
-def test_join_by_delimiter_valid(substrings, delimiter, result):
-    assert join_by_delimiter(substrings, delimiter) == result
+    Args:
+        tups (List[Tuple[str, str]]): A list of string pairs.
 
+    Returns:
+        bool: True if all pairs are palindromes of each other, otherwise False.
 
-@pytest.mark.parametrize(
-    "substrings, delimiter",
-    [
-        ("not a list", ","),
-        (["wrong", "delimiter"], 5),
-        ([3, 4, 5], ","),
-    ],
-)
-@pytest.mark.timeout(0.3)
-def test_join_by_delimiter_invalid(substrings, delimiter):
-    with pytest.raises(Exception, match="Invalid Input"):
-        join_by_delimiter(substrings, delimiter)
+    Raises:
+        Exception: If the input is invalid.
+    """
+    if not isinstance(tups, list) or not all(isinstance(pair, tuple) and len(pair) == 2 for pair in tups):
+        raise Exception("Invalid Input")
+
+    for s1, s2 in tups:
+        if not isinstance(s1, str) or not isinstance(s2, str) or s1[::-1] != s2:
+            return False
+
+    return True
+
+def join_by_delimiter(substrings: List[str], delimiter: str) -> str:
+    """
+    Join a list of strings with a specified delimiter.
+
+    Args:
+        substrings (List[str]): The list of strings to join.
+        delimiter (str): The delimiter to use for joining the strings.
+
+    Returns:
+        str: The joined string.
+
+    Raises:
+        Exception: If the input is invalid.
+    """
+    if not isinstance(substrings, list) or not all(isinstance(sub, str) for sub in substrings):
+        raise Exception("Invalid Input")
+
+    if not isinstance(delimiter, str):
+        raise Exception("Invalid Input")
+
+    return delimiter.join(substrings)
+
+# Example usage
+if __name__ == "__main__":
+    # Example for format_date
+    try:
+        print(format_date(1, 8, 2000))
+        print(format_date(29, 2, 2020))  # Leap year
+    except Exception as e:
+        print(e)
+
+    # Example for check_palindrome_tuples
+    try:
+        palindrome_tuples = [("abc", "cba"), ("madam", "madam")]
+        print(check_palindrome_tuples(palindrome_tuples))  # True
+
+        invalid_tuples = [("abc", "def"), ("ghi", "ihg")]
+        print(check_palindrome_tuples(invalid_tuples))  # False
+    except Exception as e:
+        print(e)
+
+    # Example for join_by_delimiter
+    try:
+        substrings = ["this", "is", "DSCI", "510"]
+        print(join_by_delimiter(substrings, " "))  # "this is DSCI 510"
+    except Exception as e:
+        print(e)

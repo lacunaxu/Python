@@ -5,9 +5,21 @@ from typing import Dict, List
 import requests
 from bs4 import BeautifulSoup
 
+
 def parse_hospital_data(url: str, city_name: str) -> List[dict]:
     """
-    Retrieving data of hospitals using the provided API URL.
+    Retrieve hospital data from a provided API URL for a specified city.
+
+    Args:
+        url (str): The API URL to fetch hospital data.
+        city_name (str): The name of the city to filter hospitals.
+
+    Returns:
+        List[dict]: A list of dictionaries containing hospital data for the specified city.
+
+    Raises:
+        Exception: If the 'city' key is missing in the JSON or the city does not exist.
+        Exception: If any required keys are missing from the hospital data.
     """
     r = requests.get(url)
     r.raise_for_status()
@@ -43,7 +55,17 @@ def parse_hospital_data(url: str, city_name: str) -> List[dict]:
 
 def combine_country_covid_data_from_file(file_name: str) -> str:
     """
-    Fetch and combine country details and COVID-19 statistics for country codes specified in a file.
+    Combine country details and COVID-19 statistics based on country codes from a file.
+
+    Args:
+        file_name (str): The file containing country codes, one per line.
+
+    Returns:
+        str: A JSON-formatted string containing combined country and COVID-19 data.
+
+    Raises:
+        Exception: If the specified file is not found.
+        Exception: If a country code does not exist or required keys are missing.
     """
     try:
         country_codes = []
@@ -87,7 +109,17 @@ def combine_country_covid_data_from_file(file_name: str) -> str:
 
 def parse_student_data(file_path: str, student_id: str) -> Dict:
     """
-    Parse student data from XML file and retrieve student details and enrolled courses based on student ID.
+    Parse student data from an XML file and retrieve details for a specific student ID.
+
+    Args:
+        file_path (str): The path to the XML file containing student data.
+        student_id (str): The ID of the student to retrieve data for.
+
+    Returns:
+        Dict: A dictionary containing the student's details and course information.
+
+    Raises:
+        Exception: If the student ID is not found in the XML file.
     """
     tree = ET.parse(file_path)
 

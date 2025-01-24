@@ -1,13 +1,27 @@
 from typing import List, Tuple
 
-
 def format_date(day: int, month: int, year: int) -> str:
     """
-    Format the date as per the structure provided.
+    Formats a given date into the structure 'DD Month, YYYY'.
+    
+    Args:
+        day (int): The day of the month.
+        month (int): The month of the year (1-12).
+        year (int): The year (1000-3000).
+    
+    Returns:
+        str: The formatted date in the structure 'DD Month, YYYY'.
+    
+    Raises:
+        Exception: If the date provided is invalid (e.g., non-existent day, invalid month, or leap year issues).
     """
-    month_name = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-    big_month = [1,3,5,7,8,10,12]
-    small_month = [4,6,9,11]
+    month_name = [
+        "January", "February", "March", "April", "May", "June", 
+        "July", "August", "September", "October", "November", "December"
+    ]
+    big_month = [1, 3, 5, 7, 8, 10, 12]
+    small_month = [4, 6, 9, 11]
+    
     if day <= 0 or month <= 0 or month > 12:
         raise Exception(f'The given date: {day}, {month}, {year} is invalid')
 
@@ -31,10 +45,18 @@ def format_date(day: int, month: int, year: int) -> str:
     return f"{newday} {newmonth}, {year}"
 
 
-
 def check_palindrome_tuples(tups: List[Tuple[str, str]]) -> bool:
     """
-    Find the palindrome word tuples in the list.
+    Checks if all tuples in the list are palindromic pairs.
+    
+    Args:
+        tups (List[Tuple[str, str]]): A list of tuples where each tuple contains two strings.
+    
+    Returns:
+        bool: True if all tuples are palindromic pairs, otherwise False.
+    
+    Raises:
+        Exception: If the input is invalid (e.g., not a list, tuples are not of length 2, or not strings).
     """
     if type(tups) is not list:
         raise Exception("Invalid Input")
@@ -51,13 +73,21 @@ def check_palindrome_tuples(tups: List[Tuple[str, str]]) -> bool:
         if second != first[::-1]:
             return False
     return True
-    
-    
 
 
 def join_by_delimiter(substrings: List[str], delimiter: str) -> str:
     """
-    Join the substrings using a delimiter provided.
+    Joins substrings using a specified delimiter.
+    
+    Args:
+        substrings (List[str]): A list of substrings to be joined.
+        delimiter (str): A single-character string used to join the substrings.
+    
+    Returns:
+        str: A string formed by joining the substrings with the delimiter.
+    
+    Raises:
+        Exception: If the input is invalid (e.g., delimiter is not a single character, substrings is not a list).
     """
     temp = ""
     
@@ -72,7 +102,7 @@ def join_by_delimiter(substrings: List[str], delimiter: str) -> str:
             if type(substrings[i]) is not str:
                 raise Exception("Invalid Input")
 
-            if i == len(substrings)-1:
+            if i == len(substrings) - 1:
                 temp += substrings[i]
             else:
                 temp += substrings[i] + delimiter

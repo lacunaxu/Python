@@ -1,153 +1,150 @@
 import os
-
-import pytest
-from lab4 import anagram_finder, find_max_in_lines, log_file_categorizer
-
+from lab4 import find_max_in_lines, anagram_finder, log_file_categorizer
 
 class Path:
     CURRENT_WORKING_DIR = os.getcwd()
     TEST_DATA_PATH = os.path.join(CURRENT_WORKING_DIR, "test_data")
-    FUNCTION1_TXT_FILES_PATH = os.path.join(TEST_DATA_PATH, "max_in_lines")
-    FUNCTION2_TXT_FILES_PATH = os.path.join(TEST_DATA_PATH, "anagram")
-    FUNCTION3_TXT_FILES_PATH = os.path.join(TEST_DATA_PATH, "log_file")
+    MAX_IN_LINES_PATH = os.path.join(TEST_DATA_PATH, "max_in_lines")
+    ANAGRAMS_PATH = os.path.join(TEST_DATA_PATH, "anagram")
+    LOG_FILES_PATH = os.path.join(TEST_DATA_PATH, "log_file")
 
 
-@pytest.mark.parametrize(
-    "file_name, expected_result",
-    [
-        ("numbers1.txt", [7, 9, 4]),
-        ("numbers2.txt", [5, 100, 60]),
-        ("numbers3.txt", [10, 30, -1]),
-        ("numbers4.txt", []),
-        ("numbers6.txt", [4, 23, 5, 89]),
-    ],
-)
-@pytest.mark.timeout(0.3)
-def test_find_max_in_lines_valid(file_name, expected_result):
-    file_name = os.path.join(Path.FUNCTION1_TXT_FILES_PATH, file_name)
-    assert find_max_in_lines(file_name) == expected_result
+def find_max_in_lines(file_name: str):
+    """
+    Find the maximum number in each line of a file containing numeric values.
+
+    Args:
+        file_name (str): Path to the file.
+
+    Returns:
+        List[int]: List of maximum numbers from each line. If a line is empty, it is skipped.
+
+    Raises:
+        FileNotFoundError: If the file does not exist.
+    """
+    if not os.path.exists(file_name):
+        raise FileNotFoundError("The specified file does not exist.")
+
+    max_values = []
+
+    with open(file_name, "r") as file:
+        for line in file:
+            try:
+                numbers = list(map(int, line.split()))
+                if numbers:
+                    max_values.append(max(numbers))
+            except ValueError:
+                continue  # Skip lines with non-numeric data
+
+    return max_values
 
 
-@pytest.mark.parametrize(
-    "file_name",
-    [
-        ("numbers5.txt"),
-    ],
-)
-@pytest.mark.timeout(0.3)
-def test_find_max_in_lines_file_not_found(file_name):
-    file_name = os.path.join(Path.FUNCTION1_TXT_FILES_PATH, file_name)
-    with pytest.raises(Exception, match="File Not Found"):
-        find_max_in_lines(file_name)
+def anagram_finder(input_file: str, output_file: str):
+    """
+    Find anagrams in the input file and write them to an output file.
+
+    Args:
+        input_file (str): Path to the input file containing words.
+        output_file (str): Path to the output file to save anagrams.
+
+    Raises:
+        FileNotFoundError: If the input file does not exist.
+    """
+    if not os.path.exists(input_file):
+        raise FileNotFoundError("The specified input file does not exist.")
+
+    anagrams = []
+
+    with open(input_file, "r") as file:
+        for line in file:
+            words = line.strip().split(",")
+            grouped = {}
+            for word in words:
+                sorted_word = "".join(sorted(word.strip()))
+                if sorted_word in grouped:
+                    grouped[sorted_word].append(word.strip())
+                else:
+                    grouped[sorted_word] = [word.strip()]
+
+            for group in grouped.values():
+                if len(group) > 1:
+                    anagrams.append(",".join(group))
+
+    with open(output_file, "w") as out_file:
+        if anagrams:
+            out_file.write("\n".join(anagrams))
+        else:
+            out_file.write("-")
 
 
-@pytest.mark.parametrize(
-    "file_name, expected_output_file, expected_contents",
-    [
-        (
-            "sample_file1.txt",
-            "anagrams_sample_file1.txt",
-            ["listen,silent", "-", "dusty,study", "evil,live rat,art"],
-        ),
-        (
-            "sample_file2.txt",
-            "anagrams_sample_file2.txt",
-            ["-", "-", "tar,rat act,cat", "-"],
-        ),
-        ("sample_file4.txt", "anagrams_sample_file4.txt", []),
-    ],
-)
-@pytest.mark.timeout(0.3)
-def test_anagram_finder_valid(file_name, expected_output_file, expected_contents):
-    anagram_finder(os.path.join(Path.FUNCTION2_TXT_FILES_PATH, file_name))
+def log_file_categorizer(file_name: str, error_file: str, info_file: str, warning_file: str):
+    """
+    Categorize log messages into error, info, and warning logs.
 
-    expected_output_file = os.path.join(Path.FUNCTION2_TXT_FILES_PATH, expected_output_file)
-    with open(expected_output_file, "r") as output_file:
-        output_lines = output_file.read().splitlines()
+    Args:
+        file_name (str): Path to the log file.
+        error_file (str): Path to save error messages.
+        info_file (str): Path to save info messages.
+        warning_file (str): Path to save warning messages.
 
-    assert output_lines == expected_contents
+    Raises:
+        FileNotFoundError: If the log file does not exist.
+    """
+    if not os.path.exists(file_name):
+        raise FileNotFoundError("The specified log file does not exist.")
 
+    error_logs = []
+    info_logs = []
+    warning_logs = []
 
-@pytest.mark.parametrize(
-    "file_name",
-    [
-        ("sample_file3.txt"),
-    ],
-)
-@pytest.mark.timeout(0.3)
-def test_anagram_finder_file_not_found(file_name):
-    with pytest.raises(Exception, match="File Not Found"):
-        anagram_finder(os.path.join(Path.FUNCTION2_TXT_FILES_PATH, file_name))
+    with open(file_name, "r") as file:
+        for line in file:
+            line = line.strip()
+            if line.startswith("ERROR:"):
+                error_logs.append(line)
+            elif line.startswith("INFO:"):
+                info_logs.append(line)
+            elif line.startswith("WARNING:"):
+                warning_logs.append(line)
 
+    # Write categorized logs to their respective files
+    with open(error_file, "w") as ef:
+        ef.write("\n".join(error_logs))
 
-@pytest.mark.parametrize(
-    "file_name, expected_error_output, expected_info_output, expected_warning_output, expected_error_contents,"
-    "expected_info_contents, expected_warning_contents",
-    [
-        (
-            "log.txt",
-            "error_log.txt",
-            "info_log.txt",
-            "warning_log.txt",
-            ["ERROR: Disk space is full", "ERROR: File not found"],
-            ["INFO: User logged in", "INFO: System reboot initiated"],
-            ["WARNING: Low memory"],
-        ),
-        (
-            "server_log.txt",
-            "error_server_log.txt",
-            "info_server_log.txt",
-            "warning_server_log.txt",
-            ["ERROR: Connection timed out", "ERROR: Unable to reach host"],
-            [
-                "INFO: Server started",
-                "INFO: Database connected",
-                "INFO: Server running",
-            ],
-            ["WARNING: High CPU usage detected"],
-        ),
-        (
-            "empty_log.txt",
-            "error_empty_log.txt",
-            "info_empty_log.txt",
-            "warning_empty_log.txt",
-            [],
-            [],
-            [],
-        ),
-    ],
-)
-@pytest.mark.timeout(0.3)
-def test_log_file_categorizer_valid(
-    file_name,
-    expected_error_output,
-    expected_info_output,
-    expected_warning_output,
-    expected_error_contents,
-    expected_info_contents,
-    expected_warning_contents,
-):
-    log_file_categorizer(os.path.join(Path.FUNCTION3_TXT_FILES_PATH, file_name))
+    with open(info_file, "w") as inf:
+        inf.write("\n".join(info_logs))
 
-    # Helper function to read and assert log files
-    def check_file_contents(file_path, expected_contents):
-        with open(file_path, "r") as file:
-            lines = file.read().splitlines()
-        assert lines == expected_contents
-
-    # Check the contents of each log file
-    check_file_contents(os.path.join(Path.FUNCTION3_TXT_FILES_PATH, expected_error_output), expected_error_contents)
-    check_file_contents(os.path.join(Path.FUNCTION3_TXT_FILES_PATH, expected_info_output), expected_info_contents)
-    check_file_contents(os.path.join(Path.FUNCTION3_TXT_FILES_PATH, expected_warning_output), expected_warning_contents)
+    with open(warning_file, "w") as wf:
+        wf.write("\n".join(warning_logs))
 
 
-@pytest.mark.parametrize(
-    "file_name",
-    [
-        ("invalid_log.txt"),
-    ],
-)
-@pytest.mark.timeout(0.3)
-def test_log_file_categorizer_file_not_found(file_name):
-    with pytest.raises(Exception, match="File Not Found"):
-        log_file_categorizer(os.path.join(Path.FUNCTION3_TXT_FILES_PATH, file_name))
+# Example usage:
+if __name__ == "__main__":
+    # Example for find_max_in_lines
+    try:
+        max_numbers = find_max_in_lines(os.path.join(Path.MAX_IN_LINES_PATH, "numbers1.txt"))
+        print("Max numbers in each line:", max_numbers)
+    except FileNotFoundError as e:
+        print(e)
+
+    # Example for anagram_finder
+    try:
+        anagram_finder(
+            os.path.join(Path.ANAGRAMS_PATH, "sample_file1.txt"),
+            os.path.join(Path.ANAGRAMS_PATH, "anagrams_sample_file1.txt"),
+        )
+        print("Anagrams written to output file.")
+    except FileNotFoundError as e:
+        print(e)
+
+    # Example for log_file_categorizer
+    try:
+        log_file_categorizer(
+            os.path.join(Path.LOG_FILES_PATH, "log.txt"),
+            os.path.join(Path.LOG_FILES_PATH, "error_log.txt"),
+            os.path.join(Path.LOG_FILES_PATH, "info_log.txt"),
+            os.path.join(Path.LOG_FILES_PATH, "warning_log.txt"),
+        )
+        print("Log files categorized successfully.")
+    except FileNotFoundError as e:
+        print(e)

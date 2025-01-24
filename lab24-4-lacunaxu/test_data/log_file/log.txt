@@ -1,0 +1,5 @@
+ERROR: Disk space is full
+INFO: User logged in
+WARNING: Low memory
+ERROR: File not found
+INFO: System reboot initiated

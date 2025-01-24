@@ -1,0 +1,6 @@
+INFO: Server started
+INFO: Database connected
+WARNING: High CPU usage detected
+ERROR: Connection timed out
+ERROR: Unable to reach host
+INFO: Server running

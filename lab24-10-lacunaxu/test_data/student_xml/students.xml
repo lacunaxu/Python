@@ -1,0 +1,30 @@
+<students>
+    <student id="S123">
+        <name>Alice Johnson</name>
+        <major>Computer Science</major>
+        <phone>(555) 987-6543</phone>
+        <email>alice.johnson@example.com</email>
+        <courses>
+            <course>
+                <course_name>Data Structures</course_name>
+                <credits>3</credits>
+            </course>
+            <course>
+                <course_name>Operating Systems</course_name>
+                <credits>4</credits>
+            </course>
+        </courses>
+    </student>
+    <student id="S124">
+        <name>Bob Smith</name>
+        <major>Mathematics</major>
+        <phone>(555) 123-4567</phone>
+        <email>bob.smith@example.com</email>
+        <courses>
+            <course>
+                <course_name>Calculus</course_name>
+                <credits>4</credits>
+            </course>
+        </courses>
+    </student>
+</students>

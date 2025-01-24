@@ -1,3 +1,5 @@
+from lab6 import CarLine, Library, RecentHistory
+
 def test_library_operations():
     library = Library()
 

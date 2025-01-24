@@ -5,11 +5,18 @@ def compute_persistence(num: int) -> int:
     """
     Compute the persistence of a number.
 
-    Args: num (int): input number that needs to be non-negative integer
+    Persistence is the number of steps required to reduce a number to a single digit
+    by multiplying all of its digits repeatedly.
 
-    Returns: int the persistence of a number
+    Args:
+        num (int): The input number. It must be a non-negative integer.
+
+    Returns:
+        int: The persistence of the number.
+
+    Raises:
+        Exception: If the input is not a non-negative integer.
     """
-
     if type(num) is not int or num < 0:
         raise Exception("Invalid input")
     
@@ -17,12 +24,11 @@ def compute_persistence(num: int) -> int:
     temp_num = num
     
     while(temp_num >= 10):
-        
         product = 1
         
         while temp_num > 0:
-            product *= (temp_num%10)
-            temp_num = temp_num//10
+            product *= (temp_num % 10)
+            temp_num = temp_num // 10
         
         temp_num = product 
         steps += 1            
@@ -32,14 +38,18 @@ def compute_persistence(num: int) -> int:
 
 def is_digit_power_sum(num: int, power: int) -> bool:
     """
-    Check if the number can be represented as the sum of its digits raised 
-    to a given power.
+    Check if the number can be represented as the sum of its digits raised to a given power.
 
-    Args: num(int): the non-negative integer
-    power(int): the non-negative integer exponent
+    Args:
+        num (int): The input number. It must be a non-negative integer.
+        power (int): The power to which each digit is raised. It must be a non-negative integer.
 
-    Returns: (bool) true if the number equals to be sum of each number raised 
-    to the given power False otherwise
+    Returns:
+        bool: True if the number equals the sum of its digits raised to the given power.
+              False otherwise.
+
+    Raises:
+        Exception: If the inputs are not non-negative integers.
     """
     if type(num) is not int or type(power) is not int:
         raise Exception("Invalid input") 
@@ -50,9 +60,8 @@ def is_digit_power_sum(num: int, power: int) -> bool:
     temp_num = num
     
     while temp_num > 0:
-        sums += (temp_num%10)**power
-        temp_num = temp_num//10      
-    
+        sums += (temp_num % 10) ** power
+        temp_num = temp_num // 10      
     
     return sums == num
 
@@ -61,9 +70,20 @@ def is_valid_product_code(code: str) -> bool:
     """
     Check if the product code is valid.
 
-    Args: code(str): The product code to validate
+    A valid product code must meet the following criteria:
+    1. The code must be exactly 12 characters long.
+    2. It must contain at least two uppercase letters and three digits.
+    3. It must contain exactly one dash ('-'), which cannot be the first or last character.
+    4. All characters must be either alphanumeric or a dash.
 
-    Returns: true if the product code is valid, False otherwise
+    Args:
+        code (str): The product code to validate.
+
+    Returns:
+        bool: True if the product code is valid, False otherwise.
+
+    Raises:
+        Exception: If the input is not a string.
     """
     if type(code) is not str:
         raise Exception("Invalid input") 

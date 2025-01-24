@@ -1,9 +1,21 @@
 import csv
 from typing import Any, Dict, List, Tuple
 
-
 def analyze_employee_data(filepath: str) -> Tuple[int, dict, str, List[Tuple[float, str]]]:
-    
+    """
+    Analyze employee data from a CSV file.
+
+    Args:
+        filepath (str): The path to the CSV file containing employee data.
+
+    Returns:
+        Tuple[int, dict, str, List[Tuple[float, str]]]: A tuple containing:
+            - The total number of employees (int).
+            - A dictionary with counts of employees by gender (dict).
+            - The most common job level (str).
+            - A list of tuples containing the highest problem-solving scores 
+              and their respective genders (List[Tuple[float, str]]).
+    """
     employees_num = 0
     employees_by_gender = {'Male': 0, 'Female': 0}
     joblevel_count = {}
@@ -46,6 +58,19 @@ def analyze_employee_data(filepath: str) -> Tuple[int, dict, str, List[Tuple[flo
 
 
 def analyze_sales_data(filepath: str) -> Tuple[Dict[str, int], Dict[str, float], float, List[str]]:
+    """
+    Analyze sales data from a CSV file.
+
+    Args:
+        filepath (str): The path to the CSV file containing sales data.
+
+    Returns:
+        Tuple[Dict[str, int], Dict[str, float], float, List[str]]: A tuple containing:
+            - A dictionary with the count of sales by product category (dict).
+            - A dictionary with the average sale amount by sales region (dict).
+            - The highest sale amount (float).
+            - A list of product IDs with the highest sale amount (List[str]).
+    """
     sales_by_productcategory = {}
     salesregion_amounts = {}
     salesregion_counts = {}
@@ -85,7 +110,19 @@ def analyze_sales_data(filepath: str) -> Tuple[Dict[str, int], Dict[str, float],
 
 
 def analyze_bank_data(filepath: str) -> Dict[str, Any]:
+    """
+    Analyze bank transaction data from a CSV file.
 
+    Args:
+        filepath (str): The path to the CSV file containing bank transaction data.
+
+    Returns:
+        Dict[str, Any]: A dictionary containing:
+            - 'only_deposit': A sorted list of transaction descriptions exclusive to deposits (List[str]).
+            - 'common': A sorted list of transaction descriptions common to both deposits and withdrawals (List[str]).
+            - 'only_withdrawal': A sorted list of transaction descriptions exclusive to withdrawals (List[str]).
+            - 'exclusive_count': The total count of exclusive transaction descriptions (int).
+    """
     deposit_list = set()
     withdrawal_list = set()
     
@@ -114,4 +151,3 @@ def analyze_bank_data(filepath: str) -> Dict[str, Any]:
             'only_withdrawal': only_withdrawal,
             'exclusive_count': exclusive_count
         }
-        

@@ -1,3 +1,5 @@
+from lab3 import compute_persistence, is_digit_power_sum, is_valid_product_code
+
 def compute_persistence(num: int) -> int:
     """
     Computes the multiplicative persistence of a number.

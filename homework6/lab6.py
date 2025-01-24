@@ -1,63 +1,112 @@
 class Library:
+    """
+    A class representing a library system for managing books.
+
+    Attributes:
+        book_dict (dict): A dictionary holding book information with book IDs as keys.
+    """
+
     def __init__(self):
         """
-        Initialize Library.
+        Initialize the Library with an empty book dictionary.
         """
         self.book_dict = {}
 
     def add_book(self, book_id: int, title: str, author: str, isbn: str) -> None:
         """
-        Adds a book to the library.
+        Adds a new book to the library.
+
+        Args:
+            book_id (int): Unique identifier for the book.
+            title (str): Title of the book.
+            author (str): Author of the book.
+            isbn (str): ISBN of the book.
+
+        Raises:
+            ValueError: If the book ID already exists.
         """
         if book_id in self.book_dict:
             raise ValueError("Book ID already exists")
-        
+
         self.book_dict[book_id] = {
             "title": title,
             "author": author,
             "isbn": isbn,
             "available": True
-        }   
+        }
 
     def borrow_book(self, book_id: int) -> dict:
         """
         Marks a book as borrowed if it is available.
+
+        Args:
+            book_id (int): ID of the book to be borrowed.
+
+        Returns:
+            dict: Information about the borrowed book.
+
+        Raises:
+            ValueError: If the book ID is invalid or the book is already borrowed.
         """
         if book_id not in self.book_dict:
             raise ValueError("Invalid book ID")
-        
-        if self.book_dict[book_id]["available"] == False:
+
+        if not self.book_dict[book_id]["available"]:
             raise ValueError("Book is already borrowed")
-        
+
         self.book_dict[book_id]["available"] = False
         book_info = self.book_dict[book_id]
         book_info['book_id'] = book_id
-        return book_info   
+        return book_info
 
     def return_book(self, book_id: int) -> dict:
         """
         Marks a book as returned (available).
+
+        Args:
+            book_id (int): ID of the book to be returned.
+
+        Returns:
+            dict: Updated information about the returned book.
+
+        Raises:
+            ValueError: If the book ID is invalid.
         """
         if book_id not in self.book_dict:
             raise ValueError("Invalid book ID")
-            
+
         self.book_dict[book_id]["available"] = True
-        return self.book_dict[book_id]    
+        return self.book_dict[book_id]
 
     def get_book_info(self, book_id: int) -> dict:
         """
-        Returns the book info for a given book_id.
+        Retrieves the information for a specific book.
+
+        Args:
+            book_id (int): ID of the book to retrieve.
+
+        Returns:
+            dict: Information about the requested book.
+
+        Raises:
+            ValueError: If the book ID is invalid.
         """
         if book_id not in self.book_dict:
             raise ValueError("Invalid book ID")
 
         book_info = self.book_dict[book_id]
         book_info['book_id'] = book_id
-        return book_info   
+        return book_info
 
     def filter_books_by_availability(self, available: bool) -> list:
         """
-        Filters and returns a list of books by their availability.
+        Filters books by their availability.
+
+        Args:
+            available (bool): True for available books, False for borrowed books.
+
+        Returns:
+            list: List of books matching the availability status.
         """
         book_info_list = []
         for book_id, book_info in self.book_dict.items():
@@ -69,7 +118,19 @@ class Library:
 
     def update_book_info(self, book_id: int, title: str = None, author: str = None, isbn: str = None) -> dict:
         """
-        Updates the book's information (title, author, or isbn).
+        Updates the information of a book.
+
+        Args:
+            book_id (int): ID of the book to update.
+            title (str, optional): New title for the book.
+            author (str, optional): New author for the book.
+            isbn (str, optional): New ISBN for the book.
+
+        Returns:
+            dict: Updated information about the book.
+
+        Raises:
+            ValueError: If the book ID is invalid.
         """
         if book_id not in self.book_dict:
             raise ValueError("Invalid book ID")
@@ -82,132 +143,22 @@ class Library:
 
         book_info = self.book_dict[book_id]
         book_info['book_id'] = book_id
-        return book_info   
+        return book_info
 
     def remove_book(self, book_id: int) -> None:
         """
         Removes a book from the library.
+
+        Args:
+            book_id (int): ID of the book to remove.
+
+        Raises:
+            ValueError: If the book ID is invalid or the book is currently borrowed.
         """
         if book_id not in self.book_dict:
             raise ValueError("Invalid book ID")
-            
-        if self.book_dict[book_id]["available"] == False:
+
+        if not self.book_dict[book_id]["available"]:
             raise ValueError("Book is already borrowed")
-            
+
         del self.book_dict[book_id]
-
-
-class CarLine:
-    def __init__(self):
-        """
-        Initialize the CarLine.
-        """
-        self.car = [] 
-
-    def add_car(self, reg_num: str) -> None:
-        """
-        Adds a new car to the end of the car line.
-        """
-        if type(reg_num) is not str:  
-            raise ValueError("Invalid car registration number")
-            
-        self.car.append(reg_num)
-
-    def service(self) -> str:
-        """
-        Services (removes) the car at the front of the car line.
-        """
-        if self.is_empty():
-            raise ValueError("The CarLine is empty. No cars available for service")
-        return self.car.pop(0)  
-
-    def count_cars(self) -> int:
-        """
-        Returns the total number of cars currently in the car line.
-        """
-        return len(self.car) 
-
-    def is_empty(self) -> bool:
-        """
-        Checks if the car line is empty.
-        """
-        return len(self.car) == 0  
-
-    def __str__(self) -> str:
-        """
-        Returns a string representation of the cars in the line.
-        """
-        if self.is_empty():
-            return ""
-        
-        result = ""
-        for car in self.car:
-            result += f"{car} -> "
-            
-        return result[:-4] 
-    
-
-
-class RecentHistory:
-    def __init__(self):
-        """
-        Initialize the RecentHistory with an empty list of items.
-        """
-        self.items = []  
-
-    def add(self, item: str) -> None:
-        """
-        Add a new item (file path) to the top of the history.
-        """
-        if type(item) is not str:
-            raise ValueError("Invalid item type")
-        self.items.append(item)  
-
-    def remove(self) -> str:
-        """
-        Remove the most recent item from the history and return it.
-        """
-        if self.is_empty():
-            raise ValueError("The RecentHistory is empty. No more remove operations can be performed")
-        return self.items.pop()  
-
-    def oldest(self) -> str:
-        """
-        Return the oldest item in the history without removing it.
-        """
-        if self.is_empty():
-            raise ValueError("The RecentHistory is empty. No oldest item available")
-        return self.items[0]  
-
-    def newest(self) -> str:
-        """
-        Return the most recent item in the history without removing it.
-        """
-        if self.is_empty():
-            raise ValueError("The RecentHistory is empty. No newest item available")
-        return self.items[-1]  
-
-    def count_items(self) -> int:
-        """
-        Return the total number of items in the history.
-        """
-        return len(self.items) 
-
-    def is_empty(self) -> bool:
-        """
-        Check if the history is empty.
-        """
-        return len(self.items) == 0 
-
-    def __str__(self) -> str:
-        """
-        Return a string representation of the items in the history, separated by arrows.
-        """
-        if self.is_empty():
-            return ""
-        
-        result = ""
-        for item in reversed(self.items):
-            result += f"{item} -> "
-
-        return result[:-4]
